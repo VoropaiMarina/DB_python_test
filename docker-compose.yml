@@ -1,0 +1,25 @@
+version: "3"
+services:
+  db:
+    image: db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    restart: on-failure
+    environment:
+      POSTGRES_DB: 'pg_db'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: '1111'
+    volumes:
+      - ./docker/data/db/data:/var/lib/postgresql/data
+
+  app:
+    image: app
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    links:
+      - db
+    depends_on:
+      - db
+    command: python ./test_db_random.py 
